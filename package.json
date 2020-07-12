@@ -1,8 +1,9 @@
 {
   "name": "fortify",
   "productName": "Fortify",
+
   "version": "1.4.0",
-  "description": "",
+  "description": "Fortify enables web applications to use smart cards, local certificate stores and do certificate enrollment.",
   "main": "out/main.js",
   "scripts": {
     "postinstall": "npx ts-node scripts/postinstall && electron-builder install-app-deps",
