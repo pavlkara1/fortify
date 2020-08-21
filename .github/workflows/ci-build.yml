@@ -49,7 +49,7 @@ jobs:
                 fi
             - if: matrix.os == 'ubuntu-20.04'
               run: |
-                docker build --tag fortify-$DOCKER_TAG -f ./Dockerfile.$DOCKER_TAG .
+                docker build --tag fortify-$DOCKER_TAG -f ./docker/Dockerfile.$DOCKER_TAG .
                 docker run --name fortify-$DOCKER_TAG fortify-$DOCKER_TAG
                 mkdir /installers
                 docker cp fortify-$DOCKER_TAG:/fortify/installer /installers
