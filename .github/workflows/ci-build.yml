@@ -59,7 +59,7 @@ jobs:
                 path: ./installers
                 if-no-files-found: ignore
     release: 
-      name: build
+      needs: build
       runs-on: ubuntu-latest
       steps:
         - uses: actions/download-artifact@v2
