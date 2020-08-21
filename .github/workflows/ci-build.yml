@@ -32,7 +32,7 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - name: Build application
-              run: npm intall && npm run build
+              run: npm install && npm run build
             - name: Get file extension
               run: |
                 if [ "${{matrix.os}}" == "macos-latest" ] ; then \
