@@ -2,6 +2,8 @@ name: ci-build
 
 on:
     push:
+        branches:
+            - "*" # This will match all branches
         tags:
             - "*" # This will run only in all tags
 
