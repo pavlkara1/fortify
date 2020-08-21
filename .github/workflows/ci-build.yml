@@ -51,8 +51,8 @@ jobs:
               run: |
                 docker build --tag fortify-$DOCKER_TAG -f ./docker/Dockerfile.$DOCKER_TAG .
                 docker run --name fortify-$DOCKER_TAG fortify-$DOCKER_TAG
-                mkdir /installers
-                docker cp fortify-$DOCKER_TAG:/fortify/installer /installers
+                mkdir ./installers
+                docker cp fortify-$DOCKER_TAG:/fortify/installer ./installers
             - name: Create Release
               id: create_release
               uses: actions/create-release@v1
@@ -70,5 +70,5 @@ jobs:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                 upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-                asset_path: ./fortify-installers/fortify-$OS_TYPE.$FILE_EXTENSION
+                asset_path: ./installers/fortify-$OS_TYPE.$FILE_EXTENSION
                 asset_content_type: application/zip
