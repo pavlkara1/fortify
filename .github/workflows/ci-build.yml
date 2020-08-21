@@ -31,8 +31,6 @@ jobs:
             OS_TYPE: ""
         steps:
             - uses: actions/checkout@v2
-            - name: Build application
-              run: npm install && npm run build
             - name: Get file extension
               run: |
                 if [ "${{matrix.os}}" == "macos-latest" ] ; then \
@@ -49,7 +47,7 @@ jobs:
                       FILE_EXTENSION="rpm"
                     fi
                 fi
-            - if: matrix.os == 'ubuntu-latest'
+            - if: matrix.os == 'ubuntu-20.04'
               run: |
                 docker build --tag fortify-$DOCKER_TAG -f ./Dockerfile.$DOCKER_TAG .
                 docker run --name fortify-$DOCKER_TAG fortify-$DOCKER_TAG
