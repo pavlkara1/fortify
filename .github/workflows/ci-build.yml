@@ -53,23 +53,21 @@ jobs:
                 docker run --name fortify-$DOCKER_TAG fortify-$DOCKER_TAG
                 mkdir ./installers
                 docker cp fortify-$DOCKER_TAG:/fortify/installer ./installers
-            - name: Create Release
-              id: create_release
-              uses: actions/create-release@v1
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+            - uses: actions/upload-artifact@v2
               with:
-                tag_name: ${{ github.ref }}-${{matrix.docker_tag}}-${{matrix.node}}
-                release_name: ${{ github.ref }}
-                draft: false
-                prerelease: false
-            - name: Upload Release Asset
-              id: upload-release-asset 
-              uses: actions/upload-release-asset@v1
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-                asset_path: ./installers/fortify-`echo $OS_TYPE`.`echo $FILE_EXTENSION`
-                asset_name: fortify-$OS_TYPE.$FILE_EXTENSION
-                asset_content_type: application/zip
+                name: fortify-$DOCKER_TAG.$FILE_EXTENSION
+                path: ./installers
+                if-no-files-found: ignore
+    release: 
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/download-artifact@v2
+          with:
+            path: ./installers
+        - name: Release
+          uses: softprops/action-gh-release@v1
+          if: startsWith(github.ref, 'refs/tags/')
+          with:
+            files: ./installers/*
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
