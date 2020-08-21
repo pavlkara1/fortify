@@ -33,15 +33,15 @@ jobs:
             - uses: actions/checkout@v2
             - name: Get file extension
               run: |
-                if [[ $`echo ${{matrix.os}}` == "macos-latest" ]] ; then \
+                if [[ `echo ${{matrix.os}}`=="macos-latest" ]] ; then \
                     FILE_EXTENSION="pkg"
                     OS_TYPE="macos"
-                elif [[ $`echo ${{matrix.os}}` == "windows-latest" ]] ; then \
+                elif [[ `echo ${{matrix.os}}`=="windows-latest" ]] ; then \
                     FILE_EXTENSION="msi"
                     OS_TYPE="windows"
                 else
                     OS_TYPE="${{matrix.os}}"
-                    if [ $`echo ${{matrix.docker_tag}}` ==*"debian"* || $`echo ${{matrix.docker_tag}}`==*"ubuntu"* ] ; then \
+                    if [[ `echo ${{matrix.docker_tag}}` ==*"debian"* || `echo ${{matrix.docker_tag}}`==*"ubuntu"* ]] ; then \
                       FILE_EXTENSION="deb"
                     else
                       FILE_EXTENSION="rpm"
