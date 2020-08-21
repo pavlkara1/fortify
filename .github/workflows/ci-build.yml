@@ -21,7 +21,7 @@ jobs:
                     - opensuse-tumbleweed
                     - ubuntults
                     - ubuntu-1910
-                os: [ubuntu-20.04, macos-latest, windows-latest]
+                os: [ubuntu-20.04]
                 node: [12, 14]
             
         runs-on: ${{ matrix.os }}
