@@ -57,23 +57,15 @@ jobs:
               continue-on-error: true
             - name: Get file extension
               run: |
-                if [[ "${{matrix.os}}"=="macos-latest" ]] ; then \
-                    echo ::set-env name=FILE_EXTENSION::$(echo pkg)
-                    echo ::set-env name=OS_TYPE::$(echo macos)
-                elif [[ "${{matrix.os}}"=="windows-latest" ]] ; then \
-                    echo ::set-env name=FILE_EXTENSION::$(echo msi)
-                    echo ::set-env name=OS_TYPE::$(echo windows)
-                else
                     echo ::set-env name=OS_TYPE::${{matrix.os}}
                     if [[ "${{matrix.os}}"==*"debian"* || "${{matrix.os}}"==*"ubuntu"* ]] ; then \
                       echo ::set-env name=FILE_EXTENSION::$(echo deb)
                     else
                       echo ::set-env name=FILE_EXTENSION::$(echo rpm)
                     fi
-                fi
             - name: Get package version
               run: |
-                PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }'| sed 's/[",]//g'| tr -d '[[:space:]]')
+                echo ::set-env name=PACKAGE_VERSION::$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }'| sed 's/[",]//g'| tr -d '[[:space:]]')
             - uses: actions/upload-artifact@v2
               with:
                 name: 'fortify-${{matrix.docker_tag}}.${{ env.FILE_EXTENSION }}'
