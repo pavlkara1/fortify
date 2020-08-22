@@ -55,7 +55,7 @@ jobs:
                 docker cp fortify-$DOCKER_TAG:/fortify/installer ./installers
             - uses: actions/upload-artifact@v2
               with:
-                name: fortify-`echo $DOCKER_TAG`.`echo $FILE_EXTENSION`
+                name: fortify-${{matrix.docker_tag}}
                 path: ./installers
                 if-no-files-found: ignore
     release: 
