@@ -27,6 +27,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         env: 
             DOCKER_TAG: ${{matrix.docker_tag}}
+            PACKAGE_VERSION: ""
             FILE_EXTENSION: ""
             OS_TYPE: ""
         steps:
@@ -70,10 +71,14 @@ jobs:
                       FILE_EXTENSION="rpm"
                     fi
                 fi
+            - name: Get package version
+              run: |
+                PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }'| sed 's/[",]//g'| tr -d '[[:space:]]')
             - uses: actions/upload-artifact@v2
               with:
                 name: 'fortify-${{matrix.docker_tag}}.${{ env.FILE_EXTENSION }}'
-                path: './installers/fortify-${{matrix.docker_tag}}.${{ env.FILE_EXTENSION }}'
+                path: './installers/fortify-installer_${{env.PACKAGE_VERSION}}_amd64.${{ env.FILE_EXTENSION }}'
+                tag_name: 'v.${{env.FILE_EXTENSION}}'
                 if-no-files-found: ignore
     release: 
       needs: build
