@@ -53,6 +53,7 @@ jobs:
                 docker run --name fortify-$DOCKER_TAG fortify-$DOCKER_TAG
                 mkdir ./installers
                 docker cp fortify-$DOCKER_TAG:/fortify/installer ./installers
+              continue-on-error: true
             - uses: actions/upload-artifact@v2
               with:
                 name: fortify-${{matrix.docker_tag}}
