@@ -56,15 +56,15 @@ jobs:
               continue-on-error: true
             - name: Get file extension
               run: |
-                if [ "${{matrix.os}}" == "macos-latest" ] ; then \
+                if [[ "${{matrix.os}}"=="macos-latest" ]] ; then \
                     FILE_EXTENSION="pkg"
                     OS_TYPE="macos"
-                elif [ "${{matrix.os}}" == "windows-latest" ] ; then \
+                elif [[ "${{matrix.os}}"=="windows-latest" ]] ; then \
                     FILE_EXTENSION="msi"
                     OS_TYPE="windows"
                 else
                     OS_TYPE="${{matrix.os}}"
-                    if [ "${{matrix.os}}" ==*"debian"* || "${{matrix.os}}"==*"ubuntu"* ] ; then \
+                    if [[ "${{matrix.os}}"==*"debian"* || "${{matrix.os}}"==*"ubuntu"* ]] ; then \
                       FILE_EXTENSION="deb"
                     else
                       FILE_EXTENSION="rpm"
