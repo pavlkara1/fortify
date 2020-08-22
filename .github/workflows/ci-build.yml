@@ -56,7 +56,7 @@ jobs:
               continue-on-error: true
             - uses: actions/upload-artifact@v2
               with:
-                name: 'fortify-${{matrix.docker_tag}}.`echo $FILE_EXTENSION`'
+                name: 'fortify-${{matrix.docker_tag}}.${{ env.FILE_EXTENSION }}'
                 path: './installers/*'
                 if-no-files-found: ignore
     release: 
