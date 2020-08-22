@@ -58,17 +58,17 @@ jobs:
             - name: Get file extension
               run: |
                 if [[ "${{matrix.os}}"=="macos-latest" ]] ; then \
-                    FILE_EXTENSION="pkg"
-                    OS_TYPE="macos"
+                    echo ::set-env name=FILE_EXTENSION::$(echo pkg)
+                    echo ::set-env name=OS_TYPE::$(echo macos)
                 elif [[ "${{matrix.os}}"=="windows-latest" ]] ; then \
-                    FILE_EXTENSION="msi"
-                    OS_TYPE="windows"
+                    echo ::set-env name=FILE_EXTENSION::$(echo msi)
+                    echo ::set-env name=OS_TYPE::$(echo windows)
                 else
-                    OS_TYPE="${{matrix.os}}"
+                    echo ::set-env name=OS_TYPE::${{matrix.os}}
                     if [[ "${{matrix.os}}"==*"debian"* || "${{matrix.os}}"==*"ubuntu"* ]] ; then \
-                      FILE_EXTENSION="deb"
+                      echo ::set-env name=FILE_EXTENSION::$(echo deb)
                     else
-                      FILE_EXTENSION="rpm"
+                      echo ::set-env name=FILE_EXTENSION::$(echo rpm)
                     fi
                 fi
             - name: Get package version
