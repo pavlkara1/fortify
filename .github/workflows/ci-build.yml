@@ -57,7 +57,7 @@ jobs:
             - uses: actions/upload-artifact@v2
               with:
                 name: fortify-${{matrix.docker_tag}}
-                path: ./installers
+                path: ./installers/*
                 if-no-files-found: ignore
     release: 
       needs: build
