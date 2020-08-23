@@ -27,9 +27,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       DOCKER_TAG: ${{matrix.docker_tag}}
-      PACKAGE_VERSION: ""
-      FILE_EXTENSION: ""
-      FILE_NAME: ""
     steps:
       - uses: actions/checkout@v2
       - name: Get file extension
