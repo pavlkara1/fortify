@@ -29,7 +29,6 @@ jobs:
       DOCKER_TAG: ${{matrix.docker_tag}}
       PACKAGE_VERSION: ""
       FILE_EXTENSION: ""
-      OS_TYPE: ""
       FILE_NAME: ""
     steps:
       - uses: actions/checkout@v2
@@ -37,17 +36,14 @@ jobs:
         shell: bash
         run: |
           if [[ ${{matrix.os}}==macos-latest ]] ; then \
-              echo ::set-env name=FILE_EXTENSION::$(echo deb)
-              echo ::set-env name=OS_TYPE::$(echo macos)
+              echo '::set-env name=FILE_EXTENSION::$(echo pkg)'
           elif [[ ${{matrix.os}}==windows-latest ]] ; then \
-              echo ::set-env name=FILE_EXTENSION::$(echo msi)
-              echo ::set-env name=OS_TYPE::$(echo windows)
+              echo '::set-env name=FILE_EXTENSION::$(echo msi)'
           else
-              echo ::set-env name=OS_TYPE::$(echo linux)
               if [[ ${{matrix.docker_tag}}==*debian* ]] || [[ ${{matrix.docker_tag}}==*ubuntu* ]] ; then \
-                echo ::set-env name=FILE_EXTENSION::$(echo deb)
+                echo '::set-env name=FILE_EXTENSION::$(echo deb)'
               else
-                echo ::set-env name=FILE_EXTENSION::$(echo rpm)
+                echo '::set-env name=FILE_EXTENSION::$(echo rpm)'
               fi
           fi
           echo ${{env.FILE_EXTENSION}}
@@ -58,7 +54,7 @@ jobs:
           docker run --name fortify-$DOCKER_TAG fortify-$DOCKER_TAG
           mkdir ./installers
           docker cp fortify-$DOCKER_TAG:/fortify/installer/* ./installers
-          echo ::set-env name=FILE_NAME::$(echo $(ls ./installers))
+          echo '::set-env name=FILE_NAME::$(echo $(ls ./installers))'
         continue-on-error: true
       - name: Get package version
         shell: bash
