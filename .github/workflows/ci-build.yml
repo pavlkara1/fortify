@@ -36,14 +36,15 @@ jobs:
       - name: Get file extension
         shell: bash
         run: |
-          if [[ "${{matrix.os}}"==macos-latest ]] ; then \
+
+          if [[ ${{matrix.os}}==macos-latest ]] ; then \
               echo ::set-env name=FILE_EXTENSION::$(echo deb)
               echo ::set-env name=OS_TYPE::$(echo macos)
-          elif [[ "${{matrix.os}}"==windows-latest ]] ; then \
+          elif [[ ${{matrix.os}}==windows-latest ]] ; then \
               echo ::set-env name=FILE_EXTENSION::$(echo msi)
               echo ::set-env name=OS_TYPE::$(echo windows)
           else
-              echo ::set-env name=OS_TYPE::$(echo ${{matrix.os}})
+              echo ::set-env name=OS_TYPE::$(echo linux)
               if [[ "${{matrix.docker_tag}}"==*debian* ]] || [[ "${{matrix.docker_tag}}"==*ubuntu* ]] ; then \
                 echo ::set-env name=FILE_EXTENSION::$(echo deb)
               else
@@ -66,7 +67,6 @@ jobs:
         with:
           name: "fortify-${{matrix.docker_tag}}.${{ env.FILE_EXTENSION }}"
           path: "./installers/${{ env.FILE_NAME }}"
-          tag_name: "v.${{ env.PACKAGE_VERSION }}"
           if-no-files-found: ignore
   release:
     needs: build
