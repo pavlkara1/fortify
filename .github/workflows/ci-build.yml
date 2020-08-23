@@ -52,7 +52,10 @@ jobs:
           docker run --name fortify-$DOCKER_TAG fortify-$DOCKER_TAG
           mkdir ./installers
           docker cp fortify-$DOCKER_TAG:/fortify/installer/ ./installers/
-          echo ::set-env name=FILE_NAME::$(ls ./installers/installer)
+          echo ::set-env name=FILE_NAME::$(ls ./installers/)
+          if [[ $FILE_NAME == "" ]]; then \
+            echo ::set-env name=FILE_NAME::$(ls ./installers/installer)
+          fi
         continue-on-error: true
       - name: Get package version
         shell: bash
