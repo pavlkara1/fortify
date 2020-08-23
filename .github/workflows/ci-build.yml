@@ -36,16 +36,18 @@ jobs:
         shell: bash
         run: |
           if [[ ${{matrix.os}}==macos-latest ]] ; then \
-              echo '::set-env name=FILE_EXTENSION::$(echo pkg)'
+              echo ::set-env name=FILE_EXTENSION::$(echo pkg)
           elif [[ ${{matrix.os}}==windows-latest ]] ; then \
-              echo '::set-env name=FILE_EXTENSION::$(echo msi)'
+              echo ::set-env name=FILE_EXTENSION::$(echo msi)
           else
               if [[ ${{matrix.docker_tag}}==*debian* ]] || [[ ${{matrix.docker_tag}}==*ubuntu* ]] ; then \
-                echo '::set-env name=FILE_EXTENSION::$(echo deb)'
+                echo ::set-env name=FILE_EXTENSION::$(echo deb)
               else
-                echo '::set-env name=FILE_EXTENSION::$(echo rpm)'
+                echo ::set-env name=FILE_EXTENSION::$(echo rpm)
               fi
           fi
+          echo $FILE_EXTENSION
+          echo ${{env}}
           echo ${{env.FILE_EXTENSION}}
           echo ${{env.OS_TYPE}}
       - if: ${{matrix.os}}=='ubuntu-20.04'
@@ -54,7 +56,7 @@ jobs:
           docker run --name fortify-$DOCKER_TAG fortify-$DOCKER_TAG
           mkdir ./installers
           docker cp fortify-$DOCKER_TAG:/fortify/installer/* ./installers
-          echo '::set-env name=FILE_NAME::$(echo $(ls ./installers))'
+          echo ::set-env name=FILE_NAME::$(echo $(ls ./installers))
         continue-on-error: true
       - name: Get package version
         shell: bash
