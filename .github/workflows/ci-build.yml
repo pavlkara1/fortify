@@ -63,7 +63,7 @@ jobs:
           echo ::set-env name=PACKAGE_VERSION::$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }'| sed 's/[",]//g'| tr -d '[[:space:]]')
       - uses: actions/upload-artifact@v2
         with:
-          name: "fortify-${{matrix.docker_tag}}.${{ env.FILE_EXTENSION }}"
+          name: ${{env.FILE_NAME}}
           path: "./installers/${{ env.FILE_NAME }}"
           if-no-files-found: ignore
   release:
