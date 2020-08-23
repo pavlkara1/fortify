@@ -27,6 +27,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       DOCKER_TAG: ${{matrix.docker_tag}}
+      PACKAGE_VERSION: ""
+      FILE_EXTENSION: ""
+      FILE_NAME: ""
     steps:
       - uses: actions/checkout@v2
       - name: Get file extension
@@ -52,7 +55,7 @@ jobs:
           docker build --tag fortify-$DOCKER_TAG -f ./docker/Dockerfile.$DOCKER_TAG .
           docker run --name fortify-$DOCKER_TAG fortify-$DOCKER_TAG
           mkdir ./installers
-          docker cp fortify-$DOCKER_TAG:/fortify/installer/* ./installers
+          docker cp fortify-$DOCKER_TAG:/fortify/installer ./installers/
           echo ::set-env name=FILE_NAME::$(echo $(ls ./installers))
         continue-on-error: true
       - name: Get package version
