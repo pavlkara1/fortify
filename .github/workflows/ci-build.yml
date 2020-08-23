@@ -1,87 +1,83 @@
 name: ci-build
 
 on:
-    push:
-        branches:
-            - "*" # This will match all branches
-        tags:
-            - "*" # This will run only in all tags
+  push:
+    branches:
+      - "*" # This will match all branches
+    tags:
+      - "*" # This will run only in all tags
 
 jobs:
-    build:
-        strategy:
-            matrix:
-                docker_tag:
-                    - centos8
-                    - debian-buster
-                    - debian-stretch
-                    - fedora-latest
-                    - fedora31
-                    - opensuse-leap
-                    - opensuse-tumbleweed
-                    - ubuntults
-                    - ubuntu1910
-                os: [ubuntu-20.04]
-                node: [12, 14]
-            
-        runs-on: ${{ matrix.os }}
-        env: 
-            DOCKER_TAG: ${{matrix.docker_tag}}
-            PACKAGE_VERSION: ""
-            FILE_EXTENSION: ""
-            OS_TYPE: ""
-        steps:
-            - uses: actions/checkout@v2
-            - name: Get file extension
-              run: |
-                if [[ "${{matrix.os}}"=="macos-latest" ]] ; then \
-                    FILE_EXTENSION="pkg"
-                    OS_TYPE="macos"
-                elif [[ "${{matrix.os}}"=="windows-latest" ]] ; then \
-                    FILE_EXTENSION="msi"
-                    OS_TYPE="windows"
-                else
-                    OS_TYPE="${{matrix.os}}"
-                    if [[ "${{matrix.docker_tag}}"==*"debian"* || "${{matrix.docker_tag}}"==*"ubuntu"* ]] ; then \
-                      FILE_EXTENSION="deb"
-                    else
-                      FILE_EXTENSION="rpm"
-                    fi
-                fi
-            - if: matrix.os == 'ubuntu-20.04'
-              run: |
-                docker build --tag fortify-$DOCKER_TAG -f ./docker/Dockerfile.$DOCKER_TAG .
-                docker run --name fortify-$DOCKER_TAG fortify-$DOCKER_TAG
-                mkdir ./installers
-                docker cp fortify-$DOCKER_TAG:/fortify/installer ./installers
-              continue-on-error: true
-            - name: Get file extension
-              run: |
-                    echo ::set-env name=OS_TYPE::${{matrix.os}}
-                    if [[ "${{matrix.os}}"==*"debian"* || "${{matrix.os}}"==*"ubuntu"* ]] ; then \
-                      echo ::set-env name=FILE_EXTENSION::$(echo deb)
-                    else
-                      echo ::set-env name=FILE_EXTENSION::$(echo rpm)
-                    fi
-            - name: Get package version
-              run: |
-                echo ::set-env name=PACKAGE_VERSION::$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }'| sed 's/[",]//g'| tr -d '[[:space:]]')
-            - uses: actions/upload-artifact@v2
-              with:
-                name: 'fortify-${{matrix.docker_tag}}.${{ env.FILE_EXTENSION }}'
-                path: './installers/fortify-installer_${{env.PACKAGE_VERSION}}_amd64.${{ env.FILE_EXTENSION }}'
-                tag_name: 'v.${{env.FILE_EXTENSION}}'
-                if-no-files-found: ignore
-    release: 
-      needs: build
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/download-artifact@v2
-          with:
-            path: ./installers
-        - name: Release
-          uses: softprops/action-gh-release@v1
-          with:
-            files: ./installers/*
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build:
+    strategy:
+      matrix:
+        docker_tag:
+          - centos8
+          - debian-buster
+          - debian-stretch
+          - fedora-latest
+          - fedora31
+          - opensuse-leap
+          - opensuse-tumbleweed
+          - ubuntults
+          - ubuntu1910
+        os: [ubuntu-20.04]
+        node: [12, 14]
+
+    runs-on: ${{ matrix.os }}
+    env:
+      DOCKER_TAG: ${{matrix.docker_tag}}
+      PACKAGE_VERSION: ""
+      FILE_EXTENSION: ""
+      OS_TYPE: ""
+      FILE_NAME: ""
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get file extension
+        shell: bash
+        run: |
+          if [ "${{matrix.os}}"=="macos-latest" ] ; then \
+              echo ::set-env name=FILE_EXTENSION::"pkg"
+              echo ::set-env name=OS_TYPE::"macos"
+          elif [ "${{matrix.os}}"=="windows-latest" ] ; then \
+              echo ::set-env name=FILE_EXTENSION::"msi"
+              echo ::set-env name=OS_TYPE::"windows"
+          else
+              echo ::set-env name=OS_TYPE::"${{matrix.os}}"
+              if [ "${{matrix.docker_tag}}"==*"debian"* ] || [ "${{matrix.docker_tag}}"==*"ubuntu"* ] ; then \
+                echo ::set-env name=FILE_EXTENSION::"deb"
+              else
+                echo ::set-env name=FILE_EXTENSION::"rpm"
+              fi
+          fi
+      - if: ${{matrix.os}}=='ubuntu-20.04'
+        run: |
+          docker build --tag fortify-$DOCKER_TAG -f ./docker/Dockerfile.$DOCKER_TAG .
+          docker run --name fortify-$DOCKER_TAG fortify-$DOCKER_TAG
+          mkdir ./installers
+          docker cp fortify-$DOCKER_TAG:/fortify/installer ./installers
+          echo ::set-env name=FILE_NAME::$(echo $(ls ./installers))
+        continue-on-error: true
+      - name: Get package version
+        shell: bash
+        run: |
+          echo ::set-env name=PACKAGE_VERSION::$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }'| sed 's/[",]//g'| tr -d '[[:space:]]')
+      - uses: actions/upload-artifact@v2
+        with:
+          name: "fortify-${{matrix.docker_tag}}.${{ env.FILE_EXTENSION }}"
+          path: "./installers/${{ env.FILE_NAME }}"
+          tag_name: "v.${{ env.PACKAGE_VERSION }}"
+          if-no-files-found: ignore
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          path: ./installers
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./installers/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
