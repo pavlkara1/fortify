@@ -30,7 +30,7 @@ jobs:
       PACKAGE_VERSION: ""
       FILE_EXTENSION: ""
       FILE_NAME: ""
-      FILE_DIR: ""
+      FILE_DIR: "./installers"
     steps:
       - uses: actions/checkout@v2
       - name: Get file extension
@@ -55,10 +55,10 @@ jobs:
           docker cp fortify-$DOCKER_TAG:/fortify/installer/ ./installers/
           echo ::set-env name=FILE_NAME::$(ls ./installers/)
           if [[ $FILE_NAME == "installer" ]]; then \
-            echo ::set-env name=FILE_NAME::$(ls ./installers/installer)
-            echo ::set-env name=FILE_DIR::$(echo /installers/installer)
+            echo ::set-env name=FILE_NAME::$(ls ./installers/installer/)
+            echo ::set-env name=FILE_DIR::$(echo ./installers/installer)
           else 
-            echo ::set-env name=FILE_DIR::$(echo /installers)
+            echo ::set-env name=FILE_DIR::$(echo ./installers)
           fi
         continue-on-error: true
       - name: Get package version
