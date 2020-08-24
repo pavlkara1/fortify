@@ -55,8 +55,8 @@ jobs:
           docker cp fortify-$DOCKER_TAG:/fortify/installer/ ./installers/
           echo ::set-env name=FILE_NAME::$(ls ./installers/)
           if [[ ${{env.FILE_NAME}} == installer ]] ; then \
-            echo ::set-env name=FILE_NAME::$(ls ./installers/installer/)
-            echo ::set-env name=FILE_DIR::$(echo ./installers/installer)
+            echo ::set-env name=FILE_NAME::$(ls ./installers/installer/) \ 
+            echo ::set-env name=FILE_DIR::$(echo ./installers/installer) \
           else 
             echo ::set-env name=FILE_DIR::$(echo ./installers)
           fi
