@@ -68,7 +68,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: ${{env.FILE_NAME}}
-          path: "${{env.FILE_DIR}}/${{ env.FILE_NAME }}"
+          path: "${{env.FILE_DIR}}/*"
           if-no-files-found: ignore
   release:
     needs: build
