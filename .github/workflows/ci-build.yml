@@ -93,8 +93,30 @@ jobs:
           name: fortify-windows
           path: "./installer/*"
           if-no-files-found: ignore
+  build-mac:
+    strategy:
+      matrix: 
+        os: [macos-latest]
+        node: [12]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Application
+        run: npm run build && cp package.json ./out/package.json
+      - name: Create package
+        run: |
+          npx electron-packager ./out/ fortify --platform darwin --arch x64 --out ./packages/
+          npx electron-installer-dmg ./packages/fortify-darwin-x64/fortify.app --out ./installer --icon=./src/static/icons/logo.ico
+        continue-on-error: true
+      - uses: actions/upload-artifact@v2
+        with:
+          name: fortify-windows
+          path: "./installer/*"
+          if-no-files-found: ignore
   release:
-    needs: build
+    needs: [build, build-win, build-mac]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v2
