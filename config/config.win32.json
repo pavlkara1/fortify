@@ -1,0 +1,11 @@
+{
+    "src": "./packages/fortify-win32-x64/",
+    "dest": "./installer/",
+    "name": "Fortify",
+    "productName": "Fortify App",
+    "description": "Fortify enables cross-browser usage of local certificates and smart cards",
+    "arch": "x64",
+    "homepage": "https://fortifyapp.com/",
+    "icon":"./src/static/icons/logo.ico",
+    "tags": ["Application"]
+}

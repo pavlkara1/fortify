@@ -76,6 +76,7 @@ jobs:
       matrix: 
         os: [windows-latest]
         node: 12
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
