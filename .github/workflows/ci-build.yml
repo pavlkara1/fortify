@@ -68,8 +68,8 @@ jobs:
           echo ::set-env name=PACKAGE_VERSION::$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }'| sed 's/[",]//g'| tr -d '[[:space:]]')
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{env.FILE_NAME}}
-          path: "${{env.FILE_DIR}}/*"
+          name: "${{env.DOCKER_TAG}}-${{env.FILE_NAME}}"
+          path: "${{env.FILE_DIR}}/${{env.FILE_NAME}}"
           if-no-files-found: ignore
   # build-win:
   #   strategy:
