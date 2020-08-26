@@ -76,22 +76,22 @@ jobs:
       matrix: 
         os: [windows-latest]
         node: 12
-      steps:
-        - uses: actions/checkout@v2
-        - name: Install dependencies
-          run: npm ci
-        - name: Build Application
-          run: npm run build && cp package.json ./out/package.json
-        - name: Create package
-          run: |
-            npx electron-packager ./out/ fortify --platform win32 --arch x64 --out ./packages/
-            npx electron-installer-windows --config ./config/config.win32.json
-          continue-on-error: true
-        - uses: actions/upload-artifact@v2
-          with:
-            name: fortify-windows
-            path: "./installer/*"
-            if-no-files-found: ignore
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Application
+        run: npm run build && cp package.json ./out/package.json
+      - name: Create package
+        run: |
+          npx electron-packager ./out/ fortify --platform win32 --arch x64 --out ./packages/
+          npx electron-installer-windows --config ./config/config.win32.json
+        continue-on-error: true
+      - uses: actions/upload-artifact@v2
+        with:
+          name: fortify-windows
+          path: "./installer/*"
+          if-no-files-found: ignore
   release:
     needs: build
     runs-on: ubuntu-latest
