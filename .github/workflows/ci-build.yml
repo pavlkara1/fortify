@@ -103,9 +103,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: |
-          brew install swig pcsc-lite 
-          export LDFLAGS="-L/usr/local/opt/pcsc-lite/lib"
-          export CPPFLAGS="-I/usr/local/opt/pcsc-lite/include"
+          brew install swig pcsc-lite
           npm install
           npm rebuild macos-alias --update-binary
       - name: Build Application
