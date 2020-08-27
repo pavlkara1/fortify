@@ -109,8 +109,8 @@ jobs:
           brew install swig pcsc-lite
           npm i -D electron-rebuild
           npm install
-          rm -rf ./node_modules/serialport ./@serialport package-lock.json
           ./node_modules/.bin/electron-rebuild
+          npm rebuild node-sass --force
       - name: Build Application
         run: npm run build && cp package.json ./out/package.json
       - name: Create package
