@@ -105,6 +105,7 @@ jobs:
         run: |
           brew install swig pcsc-lite 
           npm ci
+          npm rebuild
       - name: Build Application
         run: npm run build && cp package.json ./out/package.json
       - name: Create package
