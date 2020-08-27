@@ -103,7 +103,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: |
-          nvm alias default 10
+          export NVM_DIR=~/.nvm
+          source ~/.nvm/nvm.sh
           nvm use 10.22.0
           brew install swig pcsc-lite
           npm i -D electron-rebuild
